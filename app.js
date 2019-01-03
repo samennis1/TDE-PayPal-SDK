@@ -28,8 +28,8 @@ function createObject(name, price, description, id) {
         "payment_method": "paypal"
     },
     "redirect_urls": {
-        "return_url": `http://localhost:3000/purchase/${id}`,
-        "cancel_url": "http://localhost:3000/cancel"
+        "return_url": `/purchase/${id}`,
+        "cancel_url": "/cancel"
     },
     "transactions": [{
         "item_list": {
@@ -60,8 +60,8 @@ function createObject(name, price, description, id) {
 
 app.get("/", (req,res) => res.render('index'));
 
-app.post("/pay", (req,res) => {
-  let id = req.query.id;
+app.post("/pay/:id", (req,res) => {
+  let id = req.params.id;
   let item = catalog[id];
   console.log(item);
   let paypalitem = createObject(item.name, item.value, item.description, id)
