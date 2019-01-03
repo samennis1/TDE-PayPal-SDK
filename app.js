@@ -10,12 +10,13 @@ const express = require("express")
 
 
  var catalog = yaml.safeLoad(fs.readFileSync('./catalog.yaml', 'utf8'));
+ var credentials = yaml.safeLoad(fs.readFileSync("./credentials.yaml", "utf8"));
 
 
       paypal.configure({
         'mode': 'sandbox', //sandbox or live
-        'client_id': 'AfG1gJkXYLfYhrof2ckJNwgF8fZYvzDmWUPBxqeOyPLGwstPTzB_gUh94p_JtNi_iaT8vKv4d8WtyEIB',
-        'client_secret': 'ECsq7iqQ5XGaZ2iE_rx9jpVXo7guT3jwhw8AWtfuoQhQTUH71L3jgr-ZaudLfrljP_OZn818y-IOM_A0'
+        'client_id': `${credentials.client_id}`,
+        'client_secret': `${credentials.client_secret}`
       });
 
 app.set('view engine', "ejs");
