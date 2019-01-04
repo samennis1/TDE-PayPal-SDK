@@ -6,7 +6,7 @@ const express = require("express")
       fs = require("fs");
       yaml = require("js-yaml")
       mysql = require("mysql")
-      port = "5000";
+      port = "3000";
 
 
  var catalog = yaml.safeLoad(fs.readFileSync('./catalog.yaml', 'utf8'));
@@ -21,15 +21,15 @@ const express = require("express")
 
 app.set('view engine', "ejs");
 
-function createObject(name, price, description, id) {
+function createObject(name, price, description, id, for) {
   let item = {
     "intent": "sale",
     "payer": {
         "payment_method": "paypal"
     },
     "redirect_urls": {
-        "return_url": `/purchase/${id}`,
-        "cancel_url": "/cancel"
+        "return_url": `http://thediscordexperts.com:3000/purchase/${id}?for=${for}`,
+        "cancel_url": "http://thediscordexperts.com:3000/cancel"
     },
     "transactions": [{
         "item_list": {
@@ -60,11 +60,12 @@ function createObject(name, price, description, id) {
 
 app.get("/", (req,res) => res.render('index'));
 
-app.post("/pay/:id", (req,res) => {
+app.get("/pay/:id", (req,res) => {
   let id = req.params.id;
+  let server = req.query.for;
   let item = catalog[id];
   console.log(item);
-  let paypalitem = createObject(item.name, item.value, item.description, id)
+  let paypalitem = createObject(item.name, item.value, item.description, id, for)
 
 paypal.payment.create(paypalitem, function (error, payment) {
     if (error) {
@@ -103,6 +104,8 @@ paypal.payment.execute(paymentID, execute_payment_json, function (error, payment
       console.log(JSON.stringify(payment));
   }
 });
+
+res.send("Success")
 })
 
 
